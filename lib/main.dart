@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:md_tarefas/pages/lista_tarefas_page.dart';
 
 void main() {
   runApp(const MdTarefas());
@@ -14,9 +15,9 @@ class MdTarefas extends StatelessWidget {
       title: 'Gerenciador de Tarefas',
       theme: ThemeData(
 
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
-      //home: const MyHomePage(title: 'Gerenciador de Tarefas'),
+      home: ListaTarefaPage(),
     );
   }
 }
