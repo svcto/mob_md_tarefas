@@ -8,14 +8,14 @@ class ConteudoFormDialog extends StatefulWidget {
 
   final Tarefa? tarefaAtual;
 
-  ConteudoFormDialog({Key? key, this.tarefaAtual}) : super (key: key)
+  ConteudoFormDialog({Key? key, this.tarefaAtual}) : super (key: key);
 
   @override
-  _ConteudoFormDialogState createState() => _ConteudoFormDialogState();
+  ConteudoFormDialogState createState() => ConteudoFormDialogState();
 
 }
 
-class _ConteudoFormDialogState extends State<ConteudoFormDialog> {
+class ConteudoFormDialogState extends State<ConteudoFormDialog> {
   final formKey = GlobalKey<FormState>();
   final descricaoController = TextEditingController();
   final prazoController = TextEditingController();
@@ -24,8 +24,9 @@ class _ConteudoFormDialogState extends State<ConteudoFormDialog> {
   @override
   void initState() {
     super.initState();
-    if (widget.tarefaAtual == null) {
-
+    if (widget.tarefaAtual != null) {
+      descricaoController.text = widget.tarefaAtual!.descricao;
+      prazoController.text = widget.tarefaAtual!.prazoFormatado;
     }
   }
 
@@ -44,12 +45,12 @@ class _ConteudoFormDialogState extends State<ConteudoFormDialog> {
         ),
         TextFormField(controller: prazoController,
           decoration: InputDecoration(labelText: "Prazo",
-              prefixIcon: IconButton(icon: Icon(Icons.calendar_month),
-                onPressed: _mostrarCalendario(),
+              prefixIcon: IconButton(icon: const Icon(Icons.calendar_month),
+                onPressed: _mostrarCalendario,
               ),
-            suffixIcon: IconButton(icon: Icon(Icons.close),
-              onPressed: () => prazoController.clear(),
-            )
+              suffixIcon: IconButton(icon: const Icon(Icons.close),
+                onPressed: () => prazoController.clear(),
+              )
           ),
           readOnly: true,
         )
@@ -57,7 +58,29 @@ class _ConteudoFormDialogState extends State<ConteudoFormDialog> {
     ));
   }
 
-  _mostrarCalendario() {}
+  _mostrarCalendario() {
+    final dataFormatada = prazoController.text;
+    var data = DateTime.now();
+    if (dataFormatada.isNotEmpty) {
+      data = _dateFormat.parse(dataFormatada);
+    }
+    showDatePicker(context: context,
+        initialDate: data,
+        firstDate: data.subtract(Duration(days: 365 * 5)),
+        lastDate: data.add(Duration(days: 365 * 5))
+    ).then((DateTime? dataSelecionada) {
+      if (dataSelecionada != null) {
+        prazoController.text = _dateFormat.format(dataSelecionada);
+      }
+    });
+  }
 
+  bool dadosValidados() => formKey.currentState?.validate() == true;
 
+  Tarefa get novaTarefa => Tarefa(
+      id: widget.tarefaAtual?.id ?? 0,
+      descricao: descricaoController.text,
+      prazo: prazoController.text.isEmpty ?
+        null : _dateFormat.parse(prazoController.text)
+  );
 }
