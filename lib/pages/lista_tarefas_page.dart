@@ -11,6 +11,7 @@ class ListaTarefaPage extends StatefulWidget {
 class _ListaTarefasPageState extends State<ListaTarefaPage> {
 
   static const ACAO_EDITAR = 'editar';
+  static const ACAO_EXCLUIR = 'excluir';
 
   final tarefas = <Tarefa>[
     Tarefa(
@@ -61,6 +62,7 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
                               } else {
                                 tarefas[index] = novaTarefa;
                               }
+                              tarefas.add(novaTarefa);
                               Navigator.pop(context);
                             })
                           }
@@ -80,6 +82,42 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
     );
   }
 
+  void _showAlertDialog(BuildContext context, int index) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Não"),
+      onPressed:  () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Sim"),
+      onPressed:  () {
+        setState(() {
+          tarefas.remove(tarefas[index]);
+        });
+
+        Navigator.pop(context);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Atenção"),
+      content: Text("Deseja exluir esse registro?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   Widget _criarBody() {
     if (tarefas.isEmpty) {
       return const Center(
@@ -96,11 +134,13 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
               onSelected: (String valorSelecionado) {
                 if (valorSelecionado == ACAO_EDITAR) {
                   _abrirForm(tarefaAtual: tarefa, index: index);
+                } else if (valorSelecionado == ACAO_EXCLUIR) {
+                  _showAlertDialog(context, index);
                 }
               },
               child: ListTile(
                 title: Text('${tarefa.id} - ${tarefa.descricao}'),
-                subtitle: Text(tarefa.prazoFormatado == null
+                subtitle: Text(tarefa.prazo == null
                     ? "Sem prazo"
                     : 'Prazo: ${tarefa.prazoFormatado}'),
               ));
@@ -117,6 +157,15 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
           children: [
             Icon(Icons.edit, color: Colors.black),
             Padding(padding: EdgeInsets.only(left: 10), child: Text("Editar")),
+          ],
+        ),
+      ),
+      PopupMenuItem(
+        value: ACAO_EXCLUIR,
+        child: Row(
+          children: [
+            Icon(Icons.delete, color: Colors.black),
+            Padding(padding: EdgeInsets.only(left: 10), child: Text("Excluir")),
           ],
         ),
       )
