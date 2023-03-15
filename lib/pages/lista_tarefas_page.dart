@@ -9,11 +9,15 @@ class ListaTarefaPage extends StatefulWidget {
 }
 
 class _ListaTarefasPageState extends State<ListaTarefaPage> {
+
+  static const ACAO_EDITAR = 'editar';
+
   final tarefas = <Tarefa>[
     Tarefa(
-        id: 1,
-        descricao: "Minha tarefa",
-        prazo: DateTime.now().add(Duration(days: 5)))
+      id: 1,
+      descricao: "Minha tarefa",
+      //prazo: DateTime.now().add(Duration(days: 5))
+    )
   ];
 
   var _ultimoId = 1;
@@ -37,39 +41,34 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
-                tarefaAtual == null ?
-                  "Nova tarefa" :
-                  "Alterar tarefa" + tarefaAtual.id.toString()
-            ),
+            title: Text(tarefaAtual == null
+                ? "Nova tarefa"
+                : "Alterar tarefa" + tarefaAtual.id.toString()),
             content: ConteudoFormDialog(key: key, tarefaAtual: tarefaAtual),
             actions: [
               TextButton(
-                  onPressed: () =>
-                      Navigator.pop(context),
-                  child: Text("Cancelar")
-              ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Cancelar")),
               TextButton(
                   onPressed: () => {
-                      if (key.currentState != null &&
-                          key.currentState!.dadosValidados()) {
-                        setState(() {
-                          final novaTarefa = key.currentState!.novaTarefa;
-                          if (index == null) {
-                            novaTarefa.id = ++_ultimoId;
-                          } else {
-                            tarefas[index] = novaTarefa;
+                        if (key.currentState != null &&
+                            key.currentState!.dadosValidados())
+                          {
+                            setState(() {
+                              final novaTarefa = key.currentState!.novaTarefa;
+                              if (index == null) {
+                                novaTarefa.id = ++_ultimoId;
+                              } else {
+                                tarefas[index] = novaTarefa;
+                              }
+                              Navigator.pop(context);
+                            })
                           }
-                          Navigator.pop(context);
-                        })
-                      }
-                  },
-                  child: Text("Salvar")
-              )
+                      },
+                  child: Text("Salvar"))
             ],
           );
-        }
-    );
+        });
   }
 
   AppBar _criarAppBar() {
@@ -85,18 +84,42 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
     if (tarefas.isEmpty) {
       return const Center(
         child: Text("Nenhuma tarefa",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
       );
     }
     return ListView.separated(
         itemBuilder: (BuildContext context, int index) {
           final tarefa = tarefas[index];
-          return ListTile(
-            title: Text('${tarefa.id} - ${tarefa.descricao}'),
-            subtitle: Text('Prazo: ${tarefa.prazoFormatado}'),
-          );
+
+          return PopupMenuButton<String>(
+              itemBuilder: (BuildContext context) => _criarItensMenu(),
+              onSelected: (String valorSelecionado) {
+                if (valorSelecionado == ACAO_EDITAR) {
+                  _abrirForm(tarefaAtual: tarefa, index: index);
+                }
+              },
+              child: ListTile(
+                title: Text('${tarefa.id} - ${tarefa.descricao}'),
+                subtitle: Text(tarefa.prazoFormatado == null
+                    ? "Sem prazo"
+                    : 'Prazo: ${tarefa.prazoFormatado}'),
+              ));
         },
         separatorBuilder: (BuildContext context, int index) => Divider(),
         itemCount: tarefas.length);
+  }
+
+  List<PopupMenuItem<String>> _criarItensMenu() {
+    return [
+      PopupMenuItem(
+        value: ACAO_EDITAR,
+        child: Row(
+          children: [
+            Icon(Icons.edit, color: Colors.black),
+            Padding(padding: EdgeInsets.only(left: 10), child: Text("Editar")),
+          ],
+        ),
+      )
+    ];
   }
 }
