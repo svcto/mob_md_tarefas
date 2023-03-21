@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:md_tarefas/model/tarefa.dart';
-import 'package:md_tarefas/pages/conteudo_form_dialog.dart';
+import 'package:md_tarefas/widgets/conteudo_form_dialog.dart';
 
 class ListaTarefaPage extends StatefulWidget {
   @override
