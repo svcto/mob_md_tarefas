@@ -59,10 +59,11 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
                               final novaTarefa = key.currentState!.novaTarefa;
                               if (index == null) {
                                 novaTarefa.id = ++_ultimoId;
+                                tarefas.add(novaTarefa);
                               } else {
                                 tarefas[index] = novaTarefa;
                               }
-                              tarefas.add(novaTarefa);
+
                               Navigator.pop(context);
                             })
                           }
@@ -128,8 +129,35 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
     return ListView.separated(
         itemBuilder: (BuildContext context, int index) {
           final tarefa = tarefas[index];
-
-          return PopupMenuButton<String>(
+          return ListTile(
+            title: Column(
+              children: <Widget>[
+                Container(
+                    child: Row(
+                      children: <Widget>[
+                        Text('${tarefa.id} - ${tarefa.descricao}'),
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            _abrirForm(tarefaAtual: tarefa, index: index);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            _showAlertDialog(context, index);
+                          },
+                        ),
+                      ],
+                    ))
+              ],
+            ),
+            subtitle:
+            Text(tarefa.prazo == null
+                ? "Sem prazo"
+                : 'Prazo: ${tarefa.prazoFormatado}')
+          );
+          /*return PopupMenuButton<String>(
               itemBuilder: (BuildContext context) => _criarItensMenu(),
               onSelected: (String valorSelecionado) {
                 if (valorSelecionado == ACAO_EDITAR) {
@@ -143,13 +171,13 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
                 subtitle: Text(tarefa.prazo == null
                     ? "Sem prazo"
                     : 'Prazo: ${tarefa.prazoFormatado}'),
-              ));
+              ));*/
         },
         separatorBuilder: (BuildContext context, int index) => Divider(),
         itemCount: tarefas.length);
   }
 
-  List<PopupMenuItem<String>> _criarItensMenu() {
+  /*List<PopupMenuItem<String>> _criarItensMenu() {
     return [
       PopupMenuItem(
         value: ACAO_EDITAR,
@@ -170,5 +198,5 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
         ),
       )
     ];
-  }
+  }*/
 }
