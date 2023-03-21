@@ -94,8 +94,9 @@ class FiltroPageState extends State<FiltroPage> {
         ));
   }
 
-  Future<bool> _onVoltarClick() {
-    return Future(() => false);
+  Future<bool> _onVoltarClick() async {
+    Navigator.of(context).pop(_alterouValores);
+    return true;
   }
 
   void _onCampoParaOrdenacaoChanged(String? value) {
