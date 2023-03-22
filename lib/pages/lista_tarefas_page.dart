@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:md_tarefas/model/tarefa.dart';
+import 'package:md_tarefas/pages/filtro_page.dart';
 import 'package:md_tarefas/widgets/conteudo_form_dialog.dart';
 
 class ListaTarefaPage extends StatefulWidget {
@@ -78,7 +79,7 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
     return AppBar(
       title: const Text("Gerenciador de Tarefas MD"),
       actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.filter_list)),
+        IconButton(onPressed: _abrirPaginaFiltro, icon: const Icon(Icons.filter_list)),
       ],
     );
   }
@@ -199,4 +200,13 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
       )
     ];
   }*/
+
+  void _abrirPaginaFiltro() {
+    final navigator = Navigator.of(context);
+    navigator.pushNamed(FiltroPage.routeName).then((alterou) {
+        if (alterou == true) {
+          /// filtro
+        }
+      });
+  }
 }
