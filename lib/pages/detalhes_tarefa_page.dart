@@ -32,7 +32,7 @@ class DetalhePageState extends State<DetalhePage> {
         ]),
         Row(children: [
           const Campo(descricao: 'Prazo: '),
-          Valor(valor: widget.tarefa.prazoFormatado)
+          Valor(valor: widget.tarefa.prazoFormatado.isEmpty ? 'Tarefa sem prazo definido' : widget.tarefa.prazoFormatado)
         ])
       ])
     );

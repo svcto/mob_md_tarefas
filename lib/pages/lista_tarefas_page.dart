@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:md_tarefas/model/tarefa.dart';
+import 'package:md_tarefas/pages/detalhes_tarefa_page.dart';
 import 'package:md_tarefas/pages/filtro_page.dart';
 import 'package:md_tarefas/widgets/conteudo_form_dialog.dart';
 
@@ -141,6 +142,13 @@ class _ListaTarefasPageState extends State<ListaTarefaPage> {
                           icon: Icon(Icons.edit),
                           onPressed: () {
                             _abrirForm(tarefaAtual: tarefa, index: index);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.visibility),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                                MaterialPageRoute(builder: (_) => DetalhePage(tarefa: tarefa)));
                           },
                         ),
                         IconButton(
